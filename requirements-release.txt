@@ -1,0 +1,16 @@
+# Exact packages used for the light Windows 0.2.0 builds. Python 3.12.10 x64.
+beautifulsoup4==4.14.3
+cobble==0.1.4
+et_xmlfile==2.0.0
+mammoth==1.13.0
+markdownify==1.2.2
+openpyxl==3.1.5
+pillow==10.4.0
+pip==26.1.2
+PyMuPDF==1.27.2.3
+pymupdf4llm==0.3.4
+six==1.17.0
+soupsieve==2.8.4
+tabulate==0.10.0
+tkinterdnd2==0.7.0
+typing_extensions==4.15.0

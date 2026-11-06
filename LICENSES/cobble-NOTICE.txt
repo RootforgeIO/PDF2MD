@@ -1,0 +1,7 @@
+Cobble 0.1.4
+Author: Michael Williamson
+Upstream: https://github.com/mwilliamson/python-cobble
+The upstream README identifies the license as 2-Clause BSD:
+https://github.com/mwilliamson/python-cobble/blob/master/README.rst
+License terms: https://opensource.org/license/bsd-2-clause
+The 0.1.4 wheel does not include a dedicated license file. Its package metadata is retained in the runtime.

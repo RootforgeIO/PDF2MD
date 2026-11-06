@@ -1,0 +1,16 @@
+# Core: PDF reading. <2 on purpose: PyMuPDF 2.x hard-depends on pymupdf_layout
+# (Polyform Noncommercial license + onnxruntime).
+pymupdf>=1.27.1,<2
+
+# "structured" engine: Markdown tables, headings, images. 0.3.4 keeps layout optional.
+pymupdf4llm==0.3.4
+
+# Word (.docx) and Excel (.xlsx) -> Markdown (office2md.py). CSV/TXT need nothing extra.
+mammoth>=1.13,<2
+openpyxl>=3.1.5,<4
+markdownify>=0.13
+beautifulsoup4>=4.12
+
+# Window: Luna theme images (Pillow) and drag & drop of files (optional; without it — no dropping)
+Pillow>=10
+tkinterdnd2>=0.4
