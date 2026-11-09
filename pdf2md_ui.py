@@ -256,7 +256,7 @@ class App(ttk.Frame):
         self._poll_after_id: str | None = None
         self._cancel_event = threading.Event()
         self.log_file = None  # set by install_error_logging(): the log also goes there
-        self.btn_marker_install = None
+        self.marker_install_index = None
         self._settings_after_id = None
 
         self._details_open = False
@@ -293,6 +293,11 @@ class App(ttk.Frame):
             languages.add_radiobutton(label=label, variable=self.language, value=code,
                                      command=self._change_language)
         self.settings_menu.add_cascade(label=tr("Язык"), menu=languages)
+        self.marker_install_index = None
+        if marker_install.installed_build() and marker_install.installed_marker_command() is None:
+            self.settings_menu.add_separator()
+            self.settings_menu.add_command(label=tr('Установить Marker…'), command=self._start_marker_install)
+            self.marker_install_index = self.settings_menu.index("end")
         self.menu.add_cascade(label=tr("Настройки"), menu=self.settings_menu)
         self.master.config(menu=self.menu)
         if previous is not None:
@@ -316,7 +321,6 @@ class App(ttk.Frame):
         for child in self.winfo_children():
             child.destroy()
         self._details_open = False
-        self.btn_marker_install = None
         self._sheets_for = None
         self._build_ui()
         self.log.insert(END, previous_log)
@@ -434,6 +438,11 @@ class App(ttk.Frame):
             self.result_actions, text=tr('Открыть папку'), command=lambda: self._open_result(folder=True),
             style="Luna.TButton")
         self.btn_open_folder.pack(side=LEFT, padx=(px(6), 0))
+        self.btn_clear_result = ttk.Button(
+            self.result_actions, text="×", width=3, command=self._clear_result,
+            style="Luna.TButton")
+        self.btn_clear_result.pack(side=LEFT, padx=(px(6), 0))
+        ToolTip(self.btn_clear_result, tr('Очистить результат'))
         self.result_actions.grid_remove()
         self.progress_label = ttk.Label(
             body, textvariable=self.progress_status, wraplength=px(360), justify=LEFT
@@ -484,11 +493,17 @@ class App(ttk.Frame):
             self.github_link.bind(event, lambda _event: webbrowser.open("https://github.com/RootforgeIO"))
 
         self._enable_drop_target()
-        if marker_install.installed_build() and marker_install.installed_marker_command() is None:
-            self.btn_marker_install = ttk.Button(
-                opts, text=tr('Установить Marker…'), command=self._start_marker_install, style="Luna.TButton"
-            )
-            self.btn_marker_install.grid(row=3, column=0, columnspan=2, sticky="w", pady=(px(8), 0))
+        self._fit_window()
+
+    def _clear_result(self):
+        if self._last_result is None or (self._worker_thread and self._worker_thread.is_alive()):
+            return
+        self._last_result = None
+        self.result_actions.grid_remove()
+        self.progress.config(value=0)
+        self.progress.grid()
+        self.progress_status.set(tr('Готово к конвертации'))
+        self._toggle_details(False)
         self._fit_window()
 
     def _show_result(self):
@@ -685,8 +700,6 @@ class App(ttk.Frame):
 
     def _set_busy(self, busy: bool):
         self.menu.entryconfig(0, state="disabled" if busy else "normal")
-        if self.btn_marker_install is not None:
-            self.btn_marker_install.config(state="disabled" if busy else "normal")
         if busy:
             self._last_result = None
             self.result_actions.grid_remove()
@@ -848,7 +861,7 @@ class App(ttk.Frame):
             save_images=bool(self.save_images.get()),
             strip_headers=bool(self.strip_headers.get()),
         )
-        if is_pdf and options.engine == "marker" and self.btn_marker_install is not None:
+        if is_pdf and options.engine == "marker" and self.marker_install_index is not None:
             if marker_install.installed_marker_command() is None:
                 self._start_marker_install()
                 return
@@ -970,8 +983,7 @@ class App(ttk.Frame):
             while True:
                 level, payload = self._messages.get_nowait()
                 if level == "MARKER_INSTALLED":
-                    self.btn_marker_install.grid_remove()
-                    self._fit_window()
+                    self._build_menu()
                     self._refresh_estimate()
                     level = "DONE"
                 if level == "PROGRESS" and isinstance(payload, ProgressUpdate):

@@ -2,6 +2,10 @@
 
 ## Русский
 
+**Где установка Marker?** В меню «Настройки → Установить Marker…» в установщике и лёгкой portable. После установки движка этот пункт скрывается.
+
+**Как скрыть готовый результат?** Нажмите маленький крестик × рядом с кнопками открытия. Он сбрасывает вид окна и сворачивает журнал; созданные файлы, выбранный документ и настройки сохраняются.
+
 **Конвертация закончилась, а окно остаётся открытым — это нормально?** Да. После успеха появляется «Готово» с именем файла, а полоску заменяют кнопки «Открыть результат» и «Открыть папку». Можно открыть результат или начать следующую конвертацию. Если для `.md` ещё не выбрано приложение, откройте папку и выберите Markdown-просмотрщик средствами Windows.
 
 **Нужно устанавливать Python?** Нет, он включён в готовые сборки.
@@ -33,6 +37,10 @@
 **Что отправить при ошибке?** Версию программы и Windows, формат, шаги и обезличенный пример. Проверьте журнал: он может содержать пути и названия файлов/листов. Не отправляйте личные документы.
 
 ## English
+
+**Where is Marker installation?** Under “Settings → Install Marker…” in the installed and light portable builds. The item disappears once the engine is installed.
+
+**How do I dismiss a completed result?** Click the small × beside the result buttons. It resets the view and collapses the log; saved files, the selected document and preferences are kept.
 
 **Is it normal for the window to stay open after conversion?** Yes. A successful conversion shows “Done” with the filename and replaces the progress bar with “Open result” and “Open folder”. Open the output or start another conversion. If `.md` files have no default application, open the folder and choose a Markdown viewer in Windows.
 

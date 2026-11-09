@@ -8,18 +8,18 @@ Built to prepare documents for AI workflows: Markdown can help reduce the tokens
 
 ## Download
 
-**Version 0.2.1 · Windows 10 (1809 or later) / Windows 11 · x64**
+**Version 0.2.2 · Windows 10 (1809 or later) / Windows 11 · x64**
 
 Download from [Releases](https://github.com/RootforgeIO/PDF2MD/releases).
 
 | File | Purpose |
 | --- | --- |
-| `PDF2MD-0.2.1-setup.exe` | Windows installer; automatically creates Desktop and Start menu shortcuts |
-| `PDF2MD-0.2.1-portable.zip` | No installation: extract the entire folder and run `PDF2MD.exe` |
-| `PDF2MD-0.2.1-source.zip` | Source code and build instructions |
+| `PDF2MD-0.2.2-setup.exe` | Windows installer; automatically creates Desktop and Start menu shortcuts |
+| `PDF2MD-0.2.2-portable.zip` | No installation: extract the entire folder and run `PDF2MD.exe` |
+| `PDF2MD-0.2.2-source.zip` | Source code and build instructions |
 | `SHA256SUMS.txt` | Download checksums |
 
-Python and the basic libraries are included. Marker and its models are optional downloads from the application. Legacy `.doc` and `.xls` require Microsoft Word or Excel. The builds are not digitally signed.
+Python and the basic libraries are included. Marker and its models are optional downloads from the Settings menu. Legacy `.doc` and `.xls` require Microsoft Word or Excel. The builds are not digitally signed.
 
 ## Quick start
 
@@ -27,7 +27,7 @@ Python and the basic libraries are included. Marker and its models are optional 
 2. Open **PDF2MD**. Choose a document with **Browse…**, or drag it into the window.
 3. Select a worksheet for Excel. For PDF, keep **auto** or choose an engine manually.
 4. Click **Convert**. Output is saved next to the source: `document.pdf` → `document.md`; images go into `document_images`.
-5. When conversion finishes, the progress bar is replaced by **Open result** and **Open folder**. These open the Markdown file in your Windows default application or its containing folder. Move its image folder along with it to preserve links.
+5. When conversion finishes, the progress bar is replaced by **Open result** and **Open folder**. These open the Markdown file in your Windows default application or its containing folder. The **×** button beside these actions returns the window to its initial view: it dismisses the result, resets the bar and collapses the log. Saved files, the selected document and preferences are kept. Move its image folder along with it to preserve links.
 
 If output already exists, the application asks whether to replace it, save a numbered copy or cancel. **Cancel** stops the current operation. The application does not replace the source document.
 
@@ -53,7 +53,7 @@ Auto examines every page, including mixed PDFs, and ignores repeated transparent
 
 ## Optional Marker installation
 
-Click **Install Marker…**, select **CPU** or **NVIDIA CUDA 12.6**, and choose a folder. CUDA needs a compatible NVIDIA driver. Downloads require several GB and an internet connection. After setup, document processing runs locally.
+Choose **Settings → Install Marker…**, select **CPU** or **NVIDIA CUDA 12.6**, and choose a folder. CUDA needs a compatible NVIDIA driver. Downloads require several GB and an internet connection. After setup, document processing runs locally.
 
 Complex PDFs can take about a minute per page on CPU. Model loading adds startup time. Page count, layout, OCR and hardware matter more than file size alone.
 
@@ -75,7 +75,7 @@ Batch processing and exporting all worksheets at once are not yet supported. The
 
 Free download; open source under **AGPL-3.0-only**. See [LICENSE.txt](LICENSE.txt), [COPYRIGHT.txt](COPYRIGHT.txt) and [THIRD_PARTY.md](THIRD_PARTY.md).
 
-[Build instructions](docs/BUILDING.md) · [Version 0.2.1 notes](docs/releases/0.2.1.md)
+[Build instructions](docs/BUILDING.md) · [Version 0.2.2 notes](docs/releases/0.2.2.md)
 
 [Report an issue](https://github.com/RootforgeIO/PDF2MD/issues) with the application version, Windows version, document format and reproduction steps. Use a sanitized sample instead of private documents, and review logs before sharing.
 

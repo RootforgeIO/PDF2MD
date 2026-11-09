@@ -301,6 +301,55 @@ class ReleaseTests(unittest.TestCase):
                 time.sleep(.02)
             self.assertTrue(result.is_file())
             self.assertEqual(app._last_result, result)
+            # Dismiss the completed operation without deleting its file or preferences.
+            saved_content = result.read_bytes()
+            saved_options = (app.engine.get(), app.save_images.get())
+            app._toggle_details(True)
+            previous_log = app.log.get("1.0", "end-1c")
+            app.btn_clear_result.invoke()
+            root.update()
+            self.assertIsNone(app._last_result)
+            self.assertFalse(app.result_actions.winfo_ismapped())
+            self.assertTrue(app.progress.winfo_ismapped())
+            self.assertEqual(app.progress.cget("value"), 0)
+            self.assertEqual(app.progress_status.get(), "Ready to convert")
+            self.assertFalse(app._details_open)
+            self.assertEqual(app.pdf_path.get(), str(src))
+            self.assertEqual((app.engine.get(), app.save_images.get()), saved_options)
+            self.assertEqual(result.read_bytes(), saved_content)
+            self.assertEqual(app.log.get("1.0", "end-1c"), previous_log)
+            app.language.set("ru")
+            app._change_language()
+            root.update()
+            self.assertFalse(app.result_actions.winfo_ismapped())
+            self.assertEqual(app.progress_status.get(), "Готово к конвертации")
+        finally:
+            root.destroy()
+
+    def test_marker_install_is_in_settings_menu(self):
+        import pdf2md_ui
+        root = pdf2md_ui.make_root()
+        try:
+            with patch.object(pdf2md_ui.marker_install, "installed_build", return_value=True), \
+                 patch.object(pdf2md_ui.marker_install, "installed_marker_command", return_value=None):
+                app = pdf2md_ui.App(root)
+                self.assertEqual(app.settings_menu.entrycget(app.marker_install_index, "label"), "Установить Marker…")
+                with patch.object(app, "_choose_marker_install", return_value=None) as choose:
+                    app.settings_menu.invoke(app.marker_install_index)
+                    choose.assert_called_once()
+                app._set_busy(True)
+                self.assertEqual(app.menu.entrycget(0, "state"), "disabled")
+                app._set_busy(False)
+                app.language.set("en")
+                app._change_language()
+                self.assertEqual(app.settings_menu.entrycget(app.marker_install_index, "label"), "Install Marker…")
+                with patch.object(pdf2md_ui.marker_install, "installed_marker_command", return_value=["marker"]):
+                    app._messages.put(("MARKER_INSTALLED", "Marker installed"))
+                    app.after_cancel(app._poll_after_id)
+                    app._poll_after_id = None
+                    app._poll_messages()
+                    self.assertIsNone(app.marker_install_index)
+                    self.assertEqual(app.menu.entrycget(0, "state"), "normal")
         finally:
             root.destroy()
 

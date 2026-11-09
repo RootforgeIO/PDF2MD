@@ -14,7 +14,7 @@ from build_windows_installer import ROOT, build_payload
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--version", default="0.2.1")
+    parser.add_argument("--version", default="0.2.2")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     if (sys.platform != "win32" or sys.version_info[:2] != (3, 12)

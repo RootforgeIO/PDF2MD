@@ -19,7 +19,7 @@ def sha256(path: Path) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
-    parser.add_argument("--version", default="0.2.1")
+    parser.add_argument("--version", default="0.2.2")
     parser.add_argument("--source-commit", required=True)
     args = parser.parse_args()
     if not re.fullmatch(r"[0-9a-f]{40}", args.source_commit):

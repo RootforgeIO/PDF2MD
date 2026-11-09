@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.2.2 — 2026-11-09
+
+### Русский
+
+PDF2MD подготавливает документы для работы с ИИ: Markdown помогает уменьшить расход токенов при обработке документов. Экономия зависит от документа и сервиса.
+
+- Установка Marker перенесена в «Настройки → Установить Marker…».
+- Крестик × рядом с кнопками результата возвращает окно к исходному виду и сворачивает журнал. Созданные файлы, выбранный документ и настройки сохраняются.
+- Обновлены русский и английский интерфейс, инструкции и проверки.
+
+### English
+
+PDF2MD prepares documents for AI workflows: Markdown can help reduce document-processing token usage. Savings depend on the document and service.
+
+- Marker installation moved to “Settings → Install Marker…”.
+- A small × beside the result actions resets the view and collapses the log. Saved files, the selected document and preferences are kept.
+- Updated Russian and English UI, instructions and checks.
+
 ## 0.2.1 — 2026-11-09
 
 ### Русский

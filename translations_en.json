@@ -147,6 +147,7 @@
   "OK": "OK",
   "Открыть результат": "Open result",
   "Открыть папку": "Open folder",
+  "Очистить результат": "Clear result",
   "Готово: {name}": "Done: {name}",
   "Файл или папка больше не существует.": "The file or folder no longer exists.",
   "Не удалось открыть": "Could not open",
