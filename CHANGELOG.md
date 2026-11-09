@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.1 — 2026-11-09
+
+### Русский
+
+- Явное завершение конвертации: полоска исчезает, появляются «Открыть результат» и «Открыть папку».
+- Имя результата в статусе, полный путь в подсказке и журнале; кнопки сохраняются при смене языка.
+- Убрано повторное название с синей полосы. Внизу добавлена ссылка GitHub · RootforgeIO.
+- Обновлены инструкции RU/EN и проверки интерфейса.
+
+### English
+
+- Clear completion state: the progress bar is replaced by “Open result” and “Open folder”.
+- The status shows the output filename; the tooltip and log retain the full path. Result actions survive language changes.
+- Removed the repeated title from the blue band and added a GitHub · RootforgeIO footer link.
+- Updated RU/EN instructions and interface regression coverage.
+
 ## 0.2.0 — 2026-11-06
 
 ### Русский

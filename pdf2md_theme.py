@@ -291,7 +291,7 @@ class HeaderBand(Canvas):
     """Blue XP gradient band with the program title (like an XP wizard / task pane header)."""
 
     def __init__(self, master, theme: LunaTheme, title: str, subtitle: str):
-        height = theme.px(54)
+        height = theme.px(54 if title else 44)
         super().__init__(master, height=height, highlightthickness=0, borderwidth=0, background="#0A4DC7")
         self.theme, self.title, self.subtitle = theme, title, subtitle
         self.bind("<Configure>", self._draw)
@@ -308,9 +308,10 @@ class HeaderBand(Canvas):
         self.delete("all")
         self.create_image(0, 0, image=self._img, anchor="nw")
         x = self.theme.px(14)
-        self.create_text(x, self.theme.px(19), text=self.title, anchor="w", fill="#FFFFFF",
-                         font=self.theme.font(13, "bold"))
-        self.create_text(x, self.theme.px(38), text=self.subtitle, anchor="w", fill="#D9E6FF",
+        if self.title:
+            self.create_text(x, self.theme.px(19), text=self.title, anchor="w", fill="#FFFFFF",
+                             font=self.theme.font(13, "bold"))
+        self.create_text(x, self.theme.px(38) if self.title else h // 2, text=self.subtitle, anchor="w", fill="#D9E6FF",
                          font=self.theme.font(8))
         icon_size = self.theme.px(40)
         if getattr(self, "_icon", None) is None or self._icon.width() != icon_size:

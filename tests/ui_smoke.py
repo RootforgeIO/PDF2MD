@@ -102,7 +102,7 @@ def main(argv: list[str]) -> int:
             for _ in range(10):  # let the last queue messages render
                 root.update()
                 time.sleep(0.05)
-            ok = app.progress_status.get().startswith("100%")
+            ok = app._last_result is not None and app._last_result.is_file()
             break
     else:
         print("ERROR: timeout", file=sys.stderr)

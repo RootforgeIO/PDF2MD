@@ -144,5 +144,11 @@
   "CUDA недоступна. Проверьте драйвер NVIDIA или установите вариант CPU.": "CUDA is unavailable. Check the NVIDIA driver or install the CPU variant.",
   "Да": "Yes",
   "Нет": "No",
-  "OK": "OK"
+  "OK": "OK",
+  "Открыть результат": "Open result",
+  "Открыть папку": "Open folder",
+  "Готово: {name}": "Done: {name}",
+  "Файл или папка больше не существует.": "The file or folder no longer exists.",
+  "Не удалось открыть": "Could not open",
+  "Не удалось открыть файл или папку: {error}\nДля Markdown выберите подходящее приложение в Windows.": "Could not open the file or folder: {error}\nChoose an application for Markdown files in Windows."
 }

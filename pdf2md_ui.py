@@ -4,10 +4,12 @@ from i18n import tr
 
 import os
 import queue
+import subprocess
 import sys
 import threading
 import time
 import traceback
+import webbrowser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
@@ -249,6 +251,7 @@ class App(ttk.Frame):
         self.progress_status = StringVar(value=tr('Готово к конвертации'))
 
         self._worker_thread: threading.Thread | None = None
+        self._last_result: Path | None = None
         self._messages: "queue.Queue[tuple[str, object]]" = queue.Queue()
         self._poll_after_id: str | None = None
         self._cancel_event = threading.Event()
@@ -318,6 +321,7 @@ class App(ttk.Frame):
         self._build_ui()
         self.log.insert(END, previous_log)
         self.progress_status.set(tr("Готово к конвертации"))
+        self._show_result()
         self._refresh_estimate()
 
     def _build_ui(self):
@@ -327,7 +331,7 @@ class App(ttk.Frame):
         self._build_menu()
         self._set_icon()
 
-        HeaderBand(self, t, "PDF2MD", "PDF, Word, Excel, CSV, TXT  →  Markdown").pack(fill=X)
+        HeaderBand(self, t, "", "PDF, Word, Excel, CSV, TXT  →  Markdown").pack(fill=X)
         body = ttk.Frame(self, padding=(px(14), px(12), px(14), px(10)))
         body.pack(fill=BOTH, expand=True)
         body.columnconfigure(0, weight=1)
@@ -420,10 +424,22 @@ class App(ttk.Frame):
         # --- progress ------------------------------------------------------------------------
         self.progress = XPProgress(body, t)
         self.progress.grid(row=6, column=0, sticky="ew")
+        self.result_actions = ttk.Frame(body)
+        self.result_actions.grid(row=6, column=0, sticky="w")
+        self.btn_open_result = ttk.Button(
+            self.result_actions, text=tr('Открыть результат'), command=self._open_result,
+            style="Luna.Primary.TButton")
+        self.btn_open_result.pack(side=LEFT)
+        self.btn_open_folder = ttk.Button(
+            self.result_actions, text=tr('Открыть папку'), command=lambda: self._open_result(folder=True),
+            style="Luna.TButton")
+        self.btn_open_folder.pack(side=LEFT, padx=(px(6), 0))
+        self.result_actions.grid_remove()
         self.progress_label = ttk.Label(
             body, textvariable=self.progress_status, wraplength=px(360), justify=LEFT
         )
         self.progress_label.grid(row=7, column=0, sticky="w", pady=(px(5), 0))
+        ToolTip(self.progress_label, lambda: str(self._last_result or ""))
 
         actions = ttk.Frame(body)
         actions.grid(row=8, column=0, sticky="ew", pady=(px(12), 0))
@@ -461,6 +477,12 @@ class App(ttk.Frame):
             body, text=tr('Результат сохраняется рядом с исходным файлом: <имя>.md'), style="Small.TLabel"
         ).grid(row=10, column=0, sticky="w", pady=(px(8), 0))
 
+        self.github_link = ttk.Label(body, text="GitHub · RootforgeIO", style="Link.TLabel",
+                                     cursor="hand2", takefocus=True)
+        self.github_link.grid(row=11, column=0, sticky="w", pady=(px(5), 0))
+        for event in ("<Button-1>", "<Return>", "<space>"):
+            self.github_link.bind(event, lambda _event: webbrowser.open("https://github.com/RootforgeIO"))
+
         self._enable_drop_target()
         if marker_install.installed_build() and marker_install.installed_marker_command() is None:
             self.btn_marker_install = ttk.Button(
@@ -468,6 +490,29 @@ class App(ttk.Frame):
             )
             self.btn_marker_install.grid(row=3, column=0, columnspan=2, sticky="w", pady=(px(8), 0))
         self._fit_window()
+
+    def _show_result(self):
+        if self._last_result is not None:
+            self.progress.grid_remove()
+            self.result_actions.grid()
+            self.progress_status.set(tr('Готово: {name}').format(name=self._last_result.name))
+            self._fit_window()
+
+    def _open_result(self, folder: bool = False):
+        if self._last_result is None:
+            return
+        target = self._last_result.parent if folder else self._last_result
+        try:
+            if not target.exists():
+                raise FileNotFoundError(tr('Файл или папка больше не существует.'))
+            if sys.platform == "win32":
+                os.startfile(str(target))
+            else:
+                subprocess.Popen(["open" if sys.platform == "darwin" else "xdg-open", str(target)])
+        except OSError as exc:
+            messagebox.showerror(tr('Не удалось открыть'),
+                tr('Не удалось открыть файл или папку: {error}\nДля Markdown выберите подходящее приложение в Windows.').format(error=exc),
+                parent=self.master)
 
     # --- window helpers ----------------------------------------------------------------------
 
@@ -643,6 +688,9 @@ class App(ttk.Frame):
         if self.btn_marker_install is not None:
             self.btn_marker_install.config(state="disabled" if busy else "normal")
         if busy:
+            self._last_result = None
+            self.result_actions.grid_remove()
+            self.progress.grid()
             self._cancel_event = threading.Event()
             self.btn_convert.config(state="disabled")
             self.btn_cancel.config(state="normal")
@@ -906,7 +954,7 @@ class App(ttk.Frame):
                     )
                 )
                 return
-            self._messages.put(("DONE", tr('Готово: {v0} ({v1})').format(v0=out_md, v1=used)))
+            self._messages.put(("DONE", (out_md.resolve(), used)))
         except pdf2md.ConversionCancelled:
             self._messages.put(("CANCELLED", tr('Конвертация отменена — файл не записан')))
         except (pdf2md.PdfOpenError, office2md.OfficeError) as e:  # already readable
@@ -934,12 +982,17 @@ class App(ttk.Frame):
                         self._log(level, text.strip())
                     continue
 
-                msg = str(payload)
+                if level == "DONE" and isinstance(payload, tuple):
+                    self._last_result, used = payload
+                    msg = tr('Готово: {v0} ({v1})').format(v0=self._last_result, v1=used)
+                else:
+                    msg = str(payload)
                 self._log("WARN" if level == "CANCELLED" else level, msg)
                 if level in ("DONE", "ERROR", "CANCELLED"):
                     if level == "DONE":
                         self.progress.config(value=100)
                         self.progress_status.set(f"100% · {msg}")
+                        self._show_result()
                     elif level == "CANCELLED":
                         self.progress.config(value=0)
                         self.progress_status.set(msg)

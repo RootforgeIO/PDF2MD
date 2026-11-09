@@ -2,6 +2,8 @@
 
 ## Русский
 
+**Конвертация закончилась, а окно остаётся открытым — это нормально?** Да. После успеха появляется «Готово» с именем файла, а полоску заменяют кнопки «Открыть результат» и «Открыть папку». Можно открыть результат или начать следующую конвертацию. Если для `.md` ещё не выбрано приложение, откройте папку и выберите Markdown-просмотрщик средствами Windows.
+
 **Нужно устанавливать Python?** Нет, он включён в готовые сборки.
 
 **Чем portable отличается от установщика?** Portable запускается из распакованной папки и не регистрируется в Windows. Установщик создаёт ярлыки и запись удаления. Обе лёгкие сборки используют профиль Windows для настроек и отдельную папку для Marker.
@@ -31,6 +33,8 @@
 **Что отправить при ошибке?** Версию программы и Windows, формат, шаги и обезличенный пример. Проверьте журнал: он может содержать пути и названия файлов/листов. Не отправляйте личные документы.
 
 ## English
+
+**Is it normal for the window to stay open after conversion?** Yes. A successful conversion shows “Done” with the filename and replaces the progress bar with “Open result” and “Open folder”. Open the output or start another conversion. If `.md` files have no default application, open the folder and choose a Markdown viewer in Windows.
 
 **Do I need Python?** No. Ready-made builds include it.
 

@@ -659,10 +659,10 @@ class OfficeUiTests(unittest.TestCase):
                 app._start_convert()
                 app._worker_thread.join(30)
                 deadline = time.monotonic() + 5
-                while not app.progress_status.get().startswith("100%") and time.monotonic() < deadline:
+                while app._last_result is None and time.monotonic() < deadline:
                     root.update()  # the UI drains its queue every 100 ms
                     time.sleep(0.02)
-                self.assertTrue(app.progress_status.get().startswith("100%"), app.progress_status.get())
+                self.assertEqual(app._last_result, xlsx.with_suffix(".md").resolve())
                 self.assertIn("## Сводка", xlsx.with_suffix(".md").read_text(encoding="utf-8"))
 
                 app.pdf_path.set(str(pdf))

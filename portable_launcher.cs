@@ -49,8 +49,10 @@ internal static class Program
         psi.EnvironmentVariables.Remove("PDF2MD_PORTABLE_ROOT");
 #else
         string sitePackages = Path.Combine(runtime, "Lib", "site-packages");
+        psi.Arguments = "-s -B " + Quote(app);
         psi.EnvironmentVariables["PYTHONPATH"] = Path.Combine(root, "app") + ";" + sitePackages;
         psi.EnvironmentVariables["PDF2MD_PORTABLE_ROOT"] = root;
+        psi.EnvironmentVariables["PDF2MD_SETTINGS_FILE"] = Path.Combine(root, "settings.json");
         psi.EnvironmentVariables["MODEL_CACHE_DIR"] = Path.Combine(models, "datalab", "models");
         psi.EnvironmentVariables["HF_HOME"] = Path.Combine(models, "huggingface");
         psi.EnvironmentVariables["HUGGINGFACE_HUB_CACHE"] = Path.Combine(models, "huggingface", "hub");

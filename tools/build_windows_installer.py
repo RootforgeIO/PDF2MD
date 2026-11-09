@@ -103,7 +103,7 @@ def build_payload(payload: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--iscc", required=True, type=Path, help="Path to Inno Setup's ISCC.exe")
-    parser.add_argument("--version", default="0.2.0")
+    parser.add_argument("--version", default="0.2.1")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     if sys.platform != "win32" or sys.version_info[:2] != (3, 12) or sys.version_info.micro < 4:

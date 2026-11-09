@@ -257,3 +257,66 @@ class ReleaseTests(unittest.TestCase):
             self.assertEqual(src.with_suffix(".md").read_text(), "old output")
         finally:
             root.destroy()
+
+    def test_completion_replaces_progress_with_result_actions(self):
+        import pdf2md_ui
+        src = self.root / "report with spaces.txt"
+        src.write_text("Completed document", encoding="utf-8")
+        root = pdf2md_ui.make_root()
+        try:
+            app = pdf2md_ui.App(root)
+            app.pdf_path.set(str(src))
+            app._start_convert()
+            deadline = time.monotonic() + 10
+            while app.btn_convert.instate(["disabled"]) and time.monotonic() < deadline:
+                root.update()
+                time.sleep(.02)
+            root.update()
+            result = src.with_suffix(".md").resolve()
+            self.assertEqual(app._last_result, result)
+            self.assertFalse(app.progress.winfo_ismapped())
+            self.assertTrue(app.result_actions.winfo_ismapped())
+            self.assertEqual(app.progress_status.get(), "Готово: report with spaces.md")
+            with patch.object(pdf2md_ui.os, "startfile", create=True) as launch:
+                app.btn_open_result.invoke()
+                app.btn_open_folder.invoke()
+                self.assertEqual(launch.call_args_list, [unittest.mock.call(str(result)), unittest.mock.call(str(result.parent))])
+            app.language.set("en")
+            app._change_language()
+            root.update()
+            self.assertEqual(app.btn_open_result.cget("text"), "Open result")
+            self.assertFalse(app.progress.winfo_ismapped())
+            result.unlink()
+            with patch.object(pdf2md_ui.messagebox, "showerror") as error, patch.object(pdf2md_ui.os, "startfile", create=True) as launch:
+                app.btn_open_result.invoke()
+                error.assert_called_once()
+                launch.assert_not_called()
+            # A second real conversion must restore progress, then complete again.
+            app._start_convert()
+            self.assertIsNone(app._last_result)
+            self.assertEqual(app.result_actions.winfo_manager(), "")
+            deadline = time.monotonic() + 10
+            while app.btn_convert.instate(["disabled"]) and time.monotonic() < deadline:
+                root.update()
+                time.sleep(.02)
+            self.assertTrue(result.is_file())
+            self.assertEqual(app._last_result, result)
+        finally:
+            root.destroy()
+
+    def test_header_and_github_link(self):
+        import pdf2md_ui
+        from pdf2md_theme import HeaderBand
+        root = pdf2md_ui.make_root()
+        try:
+            app = pdf2md_ui.App(root)
+            root.update()
+            header = next(w for w in app.winfo_children() if isinstance(w, HeaderBand))
+            texts = [header.itemcget(item, "text") for item in header.find_all() if header.type(item) == "text"]
+            self.assertNotIn("PDF2MD", texts)
+            self.assertTrue(any("Markdown" in text for text in texts))
+            with patch.object(pdf2md_ui.webbrowser, "open") as browse:
+                app.github_link.event_generate("<Button-1>")
+                browse.assert_called_once_with("https://github.com/RootforgeIO")
+        finally:
+            root.destroy()

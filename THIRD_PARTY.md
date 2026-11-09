@@ -1,8 +1,8 @@
 # Сторонние компоненты / Third-party components
 
-PDF2MD использует перечисленные ниже компоненты. Их авторские права и условия сохраняются отдельно от лицензии PDF2MD. Таблица описывает лёгкие Windows-сборки 0.2.0; Marker не включён и устанавливается отдельно.
+PDF2MD использует перечисленные ниже компоненты. Их авторские права и условия сохраняются отдельно от лицензии PDF2MD. Таблица описывает лёгкие Windows-сборки 0.2.1; Marker не включён и устанавливается отдельно.
 
-PDF2MD uses the following components under their respective copyrights and licenses. This table describes the light Windows 0.2.0 builds; Marker is an optional separate download.
+PDF2MD uses the following components under their respective copyrights and licenses. This table describes the light Windows 0.2.1 builds; Marker is an optional separate download.
 
 | Component | Version | License | Upstream |
 | --- | --- | --- | --- |

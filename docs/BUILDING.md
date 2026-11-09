@@ -22,18 +22,18 @@ GUI tests need an interactive desktop. Tests for legacy `.doc` and `.xls` need M
 ## Installer
 
 ```powershell
-.\.venv\Scripts\python.exe -B tools\build_windows_installer.py --iscc 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' --version 0.2.0
+.\.venv\Scripts\python.exe -B tools\build_windows_installer.py --iscc 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' --version 0.2.1
 ```
 
-The output is `dist/PDF2MD-0.2.0-setup.exe`. Use `--output-dir` to choose another directory. The default installation is for all users; `/CURRENTUSER` selects per-user installation. Both modes create Desktop and Start menu shortcuts. The published installation tests used `/CURRENTUSER`.
+The output is `dist/PDF2MD-0.2.1-setup.exe`. Use `--output-dir` to choose another directory. The default installation is for all users; `/CURRENTUSER` selects per-user installation. Both modes create Desktop and Start menu shortcuts. The published installation tests used `/CURRENTUSER`.
 
 ## Light portable ZIP
 
 ```powershell
-.\.venv\Scripts\python.exe -B tools\build_portable_light.py --version 0.2.0
+.\.venv\Scripts\python.exe -B tools\build_portable_light.py --version 0.2.1
 ```
 
-The output is `dist/PDF2MD-0.2.0-portable.zip`. Extract it completely and run `PDF2MD/PDF2MD.exe`. The ZIP does not install shortcuts or register an uninstaller. It uses the same managed runtime as the installer, storing settings in the Windows user profile and optional Marker files in a separately selected folder. The builder refuses to overwrite an existing ZIP.
+The output is `dist/PDF2MD-0.2.1-portable.zip`. Extract it completely and run `PDF2MD/PDF2MD.exe`. The ZIP does not install shortcuts or register an uninstaller. It uses the same managed runtime as the installer, storing settings in the Windows user profile and optional Marker files in a separately selected folder. The builder refuses to overwrite an existing ZIP.
 
 Both builders include the application modules, Python runtime, basic dependencies, user documentation and license notices. They exclude Marker, model weights, development caches and package installation URLs that could contain machine-specific paths.
 
